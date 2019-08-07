@@ -1,30 +1,29 @@
 ﻿script "TouchsGestures"
 /*
 
-*  Autor: Andrés del Toro Cruz
-*  Correo: torocruzand@gmail.com
-*  Licencia: MIT
-*  Creación[Frcha: 7/14/19 || 10:21 PM]
-*  Rafael Freire - Holguín - CUBA
+* Author: Andrés del Toro Cruz
+* Email: torocruzand@gmail.com
+* License: MIT
+* Creation [Frcha: 7/14/19 || 10:21 PM]
+* Rafael Freire - Holguin - CUBA
 
-*  Esta mini Librería es par el comportamiento de algunos de los gestos más comunes 
-*  que tenemos en los dispositivos móviles.
+* This mini Library is for the behavior of some of the most common gestures
+* that we have on mobile devices.
 
-*  LiveCode nos permite capturar ciertos gestos específicos para los móviles.
-*  Como son el touchStart, touchEnd, touchRelease y touchMove...
+* LiveCode allows us to capture certain gestures specific to mobiles.
+* As are the touchStart, touchEnd, touchRelease and touchMove ...
 
-*  Ahora Podemos capturar otros.
-*  Cuando se realice un pellizco en la pantalla (PinchMove, PinchZoomingUp, PinchZoomingDown y PinchRotate).
-*  Al usuario soltar un toque tendremos información de la duración del toque,
-*  distancia recorrida y la ultima dirección en que se movió el usuario. En el target se disparan los 
-*  mensajes (TouchVeryFast, TouchFast, TouchSlow, TouchVerySlow ).
-*  Cuando se empuje o se deslicé un dedo de un lado a otro se genera uno de los
-*  siguientes mensajes (PushDown, PushLeft, PushUp, PushRight)
+* Now we can capture others.
+* When a pinch is performed on the screen (PinchMove, PinchZoomingUp, PinchZoomingDown and PinchRotate).
+* To the user to release a touch we will have information of the duration of the touch,
+* distance traveled and the last direction in which the user moved. In the target the
+* messages (TouchVeryFast, TouchFast, TouchSlow, TouchVerySlow).
+* When one finger is pushed or slid from side to side, one of the
+* following messages (PushDown, PushLeft, PushUp, PushRight)
 
-*  Nota_
-*  Si usa uno de los gestos (touchStart, touchEnd, touchRelease o touchMove) debe de darle un pass para que
-*  los demás gestos que están aquí funcionen de forma correcta.
-
+* Note_
+* If you use one of the gestures (touchStart, touchEnd, touchRelease or touchMove) you must give it a pass so that
+* the other gestures that are here work correctly.
 */
 
 # MultiTouchs
@@ -41,7 +40,7 @@ local tNumTouchs
 # Long touch
 local sPendingTouchStillDown, sStatTouchStillDown
 
-before touchStart pTouchID
+on touchStart pTouchID
    local tLoc
    put the mouseLoc into tLoc
    put the millisec into gTouchs[pTouchID]["StartTime"]
@@ -69,7 +68,7 @@ before touchStart pTouchID
    pass touchStart
 end touchStart
 
-before touchEnd pTouchID
+on touchEnd pTouchID
    local tTime = 0, tTouchFast, tMillisec, tLoc
    
    put the millisec into tMillisec
@@ -139,12 +138,12 @@ before touchEnd pTouchID
    pass touchEnd
 end touchEnd
 
-before touchRelease pID
+on touchRelease pID
    touchEnd pID
    pass touchRelease
 end touchRelease
 
-before touchMove pTouchID, pTouchX, pTouchY
+on touchMove pTouchID, pTouchX, pTouchY
    if the mouse is not down then pass touchMove
    
    // Salvo la posición del toque
