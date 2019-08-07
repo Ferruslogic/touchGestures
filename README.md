@@ -1,2 +1,2 @@
 # touchGestures
- library for handling finger gestures on a screen.
+ Now we can play with finger gestures on the screen.
