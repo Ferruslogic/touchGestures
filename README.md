@@ -1,8 +1,7 @@
 # touchGestures
  Now we can play with finger gestures on the screen.
 
-Library usage guide. 
-The gesture library is used like any other library in LiveCode.
+# The gesture library is used like any other library in LiveCode.
 
 If you don't know how to do it, check the LiveCode dictionary:
 
