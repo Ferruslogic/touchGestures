@@ -16,7 +16,7 @@
 * Now we can capture others.
 * When a pinch is performed on the screen (PinchMove, PinchZoomingUp, PinchZoomingDown and PinchRotate).
 * To the user to release a touch we will have information of the duration of the touch,
-* distance traveled and the last direction in which the user moved. In the target the
+* distance traveled and the last direction in which the user moved. In the me the
 * messages (TouchVeryFast, TouchFast, TouchSlow, TouchVerySlow).
 * When one finger is pushed or slid from side to side, one of the
 * following messages (PushDown, PushLeft, PushUp, PushRight)
@@ -39,6 +39,7 @@ local tNumTouchs
 
 # Long touch
 local sPendingTouchStillDown, sStatTouchStillDown
+constant kTouchStillDownTimeSec = 1
 
 on touchStart pTouchID
    local tLoc
@@ -53,7 +54,7 @@ on touchStart pTouchID
       else if (gTouchs[pTouchID]["StartTime"] - sLastTouchDown["StartTime"]) <= kDoubleClickInterval then
          put 0 into sTouchDoubleDown
          put the mouseLoc into tLoc
-         send "TouchDoubleDown" to the long id of target with pTouchID, item  1 of tLoc, item 2 of tLoc
+         send "TouchDoubleDown" to the long id of me with pTouchID, item  1 of tLoc, item 2 of tLoc
          pass touchStart
       else
          put gTouchs[pTouchID]["StartTime"] into sLastTouchDown["StartTime"]
@@ -61,7 +62,7 @@ on touchStart pTouchID
       
       if sPendingTouchStillDown is a number then cancel sPendingTouchStillDown
       put tLoc into sStatTouchStillDown
-      send "_DispatchTouchDoubleDown pTouchID" to me in 1 sec
+      send "_DispatchTouchDoubleDown pTouchID" to me in kTouchStillDownTimeSecs sec
       put the result into sPendingTouchStillDown
       
    end if
@@ -89,19 +90,19 @@ on touchEnd pTouchID
    
    switch 
       case tTime <= 50
-         send "TouchVeryFast pTouchID, tChanger, tAddressOfTouch" to the long id of target in 0
+         send "TouchVeryFast pTouchID, tChanger, tAddressOfTouch" to the long id of me in 0
          put the result into tTouchFast
          break
       case tTime <= 250
-         send "Touchfast pTouchID, tChanger, tAddressOfTouch" to the long id of target in 0
+         send "Touchfast pTouchID, tChanger, tAddressOfTouch" to the long id of me in 0
          put the result into tTouchFast
          break
       default
          if tTime > 250 and tTime < 700 then
-            send "Touchslow pTouchID, tChanger, tAddressOfTouch" to the long id of target in 0
+            send "Touchslow pTouchID, tChanger, tAddressOfTouch" to the long id of me in 0
             put the result into tTouchFast
          else
-            send "TouchVerySlow pTouchID, tChanger, tAddressOfTouch" to the long id of target in 0
+            send "TouchVerySlow pTouchID, tChanger, tAddressOfTouch" to the long id of me in 0
             put the result into tTouchFast
          end if
    end switch
@@ -116,7 +117,7 @@ on touchEnd pTouchID
       # PINCHEND
       if sIsPinch is 1  then
          put 0 into sIsPinch
-         send "PinchEnd  sPinchId" to the long id of target in 0
+         send "PinchEnd  sPinchId" to the long id of me in 0
       else
          # TOUCHDOUBLEUP
          add 1 to sTouchDoubleUp
@@ -127,7 +128,7 @@ on touchEnd pTouchID
             put the mouseLoc into tLoc
             put item  1 of tLoc into tTouchX
             put item 2 of tLoc into tTouchY
-            send "TouchDoubleUp pTouchID, tTouchX, tTouchY" to the long id of target
+            send "TouchDoubleUp pTouchID, tTouchX, tTouchY" to the long id of me
          else
             put tMillisec into sLastTouchUp["StartTime"]
          end if
@@ -146,22 +147,22 @@ end touchRelease
 on touchMove pTouchID, pTouchX, pTouchY
    if the mouse is not down then pass touchMove
    
-   // Salvo la posición del toque
+   # Saving touch position
    if gTouchs[pTouchID]["StartLoc"] is empty then
       put pTouchX, pTouchY into gTouchs[pTouchID]["StartLoc"]
    else 
       put pTouchX, pTouchY into gTouchs[pTouchID]["CurrentLoc"]
-      // Changer in X
+      # Changer in X
       put item 1 of gTouchs[pTouchID]["StartLoc"] - pTouchX into gTouchs[pTouchID]["ChangedInX"]
-      // Changer in Y
+      # Changer in Y
       put item 2 of gTouchs[pTouchID]["StartLoc"]  - pTouchY into gTouchs[pTouchID]["ChangedInY"]
-      // Distance
+      # Distance
       put round(sqrt((gTouchs[pTouchID]["ChangedInX"]^2) + (gTouchs[pTouchID]["ChangedInY"]^2))) into gTouchs[pTouchID]["Changed"]
       
-      // Angles and Rotation
+      # Angles and Rotation
       put _AngleTouch(pTouchID) into gTouchs[pTouchID]["Angle"]
       
-      // Para la dirección 
+      # For the address
       local tOldAddress = ""
       if gTouchs[pTouchID]["AddressOfTouch"] is not empty then put gTouchs[pTouchID]["AddressOfTouch"] into tOldAddress
       if gTouchs[pTouchID]["PrevLoc"] is a point then
@@ -175,17 +176,17 @@ on touchMove pTouchID, pTouchX, pTouchY
    
    put the keys of gTouchs into sDoubleTouchIDs
    
-   // Si no he movido el toque no hago nada
+   # If I have not moved the touch I do nothing
    if gTouchs[pTouchID]["CurrentLoc"] is a point then
       
-      // Para saber si es un multitoques
+      # To know if it is a multitouch
       if the num of lines of keys of gTouchs >= 2 then
          
          # PINCHSTART
          if sIsPinch is 0 then
             put 1 into sIsPinch
             add 1 to sPinchId
-            send "PinchStart sPinchId" to the long id of target in 0
+            send "PinchStart sPinchId" to the long id of me in 0
          end if
          
          local tInfoOfPinch
@@ -193,12 +194,12 @@ on touchMove pTouchID, pTouchX, pTouchY
          put item 1 of tInfoOfPinch into tChangerPinch
          
          if sChangerPinch is not tChangerPinch then
-            send "PinchMove sPinchId, tChangerPinch" to the long id of target with 
+            send "PinchMove sPinchId, tChangerPinch" to the long id of me with 
             # PINCHS ZOOMING
             
-            // Mensajes generado cuando se "pellizca" la pantalla 
-            if item 3 of tInfoOfPinch is 0 then send "PinchZoomingDown sPinchId, tChangerPinch" to the long id of target in 0
-            if item 3 of tInfoOfPinch is 1 then send "PinchZoomingUp sPinchId, tChangerPinch" to the long id of target in 0
+            # Messages generated when the screen is "pinched"
+            if item 3 of tInfoOfPinch is 0 then send "PinchZoomingDown sPinchId, tChangerPinch" to the long id of me in 0
+            if item 3 of tInfoOfPinch is 1 then send "PinchZoomingUp sPinchId, tChangerPinch" to the long id of me in 0
             
          end if
          
@@ -208,7 +209,7 @@ on touchMove pTouchID, pTouchX, pTouchY
          local tAngleOfPinch = 0
          put item 2 of tInfoOfPinch into tAngleOfPinch
          if abs(tAngleOfPinch) > 5 and sAngleOfPinch <> tAngleOfPinch then
-            send "PinchRotate sPinchId, tAngleOfPinch" to the long id of target in 0
+            send "PinchRotate sPinchId, tAngleOfPinch" to the long id of me in 0
          end if
          put tAngleOfPinch into sAngleOfPinch
          
@@ -225,9 +226,9 @@ on touchMove pTouchID, pTouchX, pTouchY
                put  gTouchs[pTouchID]["ChangedInX"] into tChanged
                if abs(tChanged) > 10 then
                   if tChanged > 1 then
-                     send "PushLeft pTouchID, tChanged" to the long id of target  in 0 
+                     send "PushLeft pTouchID, tChanged" to the long id of me  in 0 
                   else
-                     send "PushRight pTouchID, tChanged" to the long id of target in 0
+                     send "PushRight pTouchID, tChanged" to the long id of me in 0
                   end if
                end if
                
@@ -236,131 +237,131 @@ on touchMove pTouchID, pTouchX, pTouchY
                put gTouchs[pTouchID]["ChangedInY"] into tChanged
                if abs(tChanged) > 10 then
                   if tChanged > 1 then
-                     send "PushUp pTouchID, tChanged" to the long id of target in 0
+                     send "PushUp pTouchID, tChanged" to the long id of me in 0
                      
                   else
-                     send "PushDown pTouchID, tChanged" to the long id of target  in 0
+                     send "PushDown pTouchID, tChanged" to the long id of me  in 0
                   end if
                end if
             end if
-            // Salvo los cambios para no estar renviando mensajes por gusto
+            # Save changes to not send messages for pleasure
             put gTouchs[pTouchID]["Changed"] into gTouchs[pTouchID]["OldChanged"]
          end if
       end if
    end if
    
-   // Para saber la posición de donde vengo 
+   # To know where I come from 
    put  pTouchX, pTouchY into gTouchs[pTouchID]["PrevLoc"]
    pass touchMove
 end touchMove
 
 --------------------------------------------------------------------------
------------------- MENSAJES GENERADOS PARA CADA GESTO---------------------
+------------------ MESSAGES GENERATED FOR EVERY GESTURE ---------------------
 --------------------------------------------------------------------------
-# Toque prolongado *
-on TouchStillDown
-   
+# Long touch *
+on TouchStillDown pPinchId
+   # pPinchId. Pinch Id.
 end TouchStillDown
 
-# Doble toque presionado
-on TouchDoubleDown
-   
+# Double tap pressed
+on TouchDoubleDown pPinchId
+   # pPinchId. Pinch Id.
 end TouchDoubleDown
 
-# Doble toque liberado
-on TouchDoubleUp
-   
+# Double tap released
+on TouchDoubleUp pPinchId
+   # pPinchId. Pinch Id.
 end TouchDoubleUp
 
-# Comienza un pellizco
+# Start a pinch
 on PinchStart pPinchId
-   # pPinchId. Id del pellizco.
+   # pPinchId. Pinch Id.
 end PinchStart
 
-# Pellizco en la pantalla
+# Pinch on the screen
 on PinchMove pPinchId, pRadioOfTouches  , pType
-   # pPinchId. Id del pellizco.
-   # pRadioOfTouches. Radio entre de los toques. El que se mueve y cualquier otro.
-   # pType. Tipo de pellizco. Asia arriba(1), abajo (0) o simplemente moviendo los dedos a la misma distancia(null)
+   # pPinchId. Pinch Id.
+   # pRadioOfTouches. Radius between two of the touches. The one who moves and any other.
+   # pType. Type of pinch. Up (1), down (0) or simply by moving your fingers the same distance (null).
 end PinchMove
 
-# Pellizco hacia abajo
+# Pinch down
 on PinchZoomingDown pPinchId, pRadioOfTouches
-   # pPinchId. Id del pellizco.
-   # pRadioOfTouches. Radio entre de los toques. El que se mueve y cualquier otro.
+   # pPinchId. Pinch Id.
+   # pRadioOfTouches. Radius between two of the touches. The one who moves and any other.
 end PinchZoomingDown
 
-# Pellizco hacia abajo
+# Pinch down
 on PinchZoomingUp pPinchId, pRadioOfTouches
-   # pPinchId. Id del pellizco.
-   # pRadioOfTouches. Radio entre de los toques. El que se mueve y cualquier otro.
+   # pPinchId. Pinch Id.
+   # pRadioOfTouches. Radius between two of the touches. The one who moves and any other.
 end PinchZoomingUp
 
-# Pellizco rotando
+# Pinch rotate
 on PinchRotate pPinchId, pRotation
-   # pPinchId. Id del pellizco.
-   # pRotation. Es lo que se ha rotado los toques en la pantalla
+   # pPinchId. Pinch Id.
+   # pRotation. It is what has turned the touches on the screen.
 end PinchRotate
 
-# Fin del pellizco
+# End of the pinch
 on PinchEnd pPinchId
-   # pPinchId. Id del pellizco.
+   # pPinchId. Pinch Id.
 end PinchEnd
 
-# Empujar para la izquierda
+# Push to the left
 on PushLeft pTouchID, pDistance
-   # pTouchID. El id del toque.
-   # pDistance. La distancia recorrida por el toque.
+   # pTouchID. The id of the touch.
+   # pDistance. The distance traveled by the touch.
 end PushLeft
 
-# Empujar para la derecha
+# Push to the right
 on PushRight pTouchID, pDistance
-   # pTouchID. El id del toque.
-   # pDistance. La distancia recorrida por el toque.
+    # pTouchID. The id of the touch.
+   # pDistance. The distance traveled by the touch.
 end PushRight
 
-# Empujar para arriba
+# Push up
 on PushUp pTouchID, pDistance
-   # pTouchID. El id del toque.
-   # pDistance. La distancia recorrida por el toque.
+   # pTouchID. The id of the touch.
+   # pDistance. The distance traveled by the touch.
 end PushUp
 
-# Empujar para abajo
+# Push down
 on PushDown pTouchID, pDistance
-   # pTouchID. El id del toque.
-   # pDistance. La distancia recorrida por el toque.
+   # pTouchID. The id of the touch.
+   # pDistance. The distance traveled by the touch.
 end PushDown
 
-# Toque muy rápido
+# Touch very fast
 on TouchVeryFast pTouchID, pDistance, pMoveAddress
-   # pTouchID. El id del toque
-   # pDistance. La distancia recorrida por el toque
-   # pMoveAddress. Dirección en la que se mueve el toque por ultima vez
+  # pTouchID. The id of the touch
+    # pDistance. The distance traveled by the touch
+    # pMoveAddress. Direction in which the touch moves for the last time
 end TouchVeryFast
 
-# toque rápido
+# quick tap
 on TouchFast pTouchID, pDistance, pMoveAddress
-   # pTouchID. El id del toque
-   # pDistance. La distancia recorrida por el toque
-   # pMoveAddress. Dirección en la que se mueve el toque por ultima vez
+ # pTouchID. The id of the touch
+    # pDistance. The distance traveled by the touch
+    # pMoveAddress. Direction in which the touch moves for the last time
 end TouchFast
 
-# Toque lento
+# Slow touch
 on TouchSlow pTouchID, pDistance, pMoveAddress
-   # pTouchID. El id del toque
-   # pDistance. La distancia recorrida por el toque
-   # pMoveAddress. Dirección en la que se mueve el toque por ultima vez
+ # pTouchID. The id of the touch
+    # pDistance. The distance traveled by the touch
+    # pMoveAddress. Direction in which the touch moves for the last time
 end TouchSlow
    
-# Toque muy lento
+# Touch too slow
 on TouchVerySlow pTouchID, pDistance, pMoveAddress
-   # pTouchID. El id del toque
-   # pDistance. La distancia recorrida por el toque
-   # pMoveAddress. Dirección en la que se mueve el toque por ultima vez
+ # pTouchID. The id of the touch
+    # pDistance. The distance traveled by the touch
+    # pMoveAddress. Direction in which the touch moves for the last time
 end TouchVerySlow
 
 ---------------------------------------------------------------------
---------------- Funciones y comandos privados -----------------------
+--------------- Private functions and commands ----------------------
 ---------------------------------------------------------------------
 
 private function _InfoOfPinch pTouchId
@@ -368,7 +369,6 @@ private function _InfoOfPinch pTouchId
    local tLocOneTouch, tLocTwoTouch 
    local tStartAngle, tEndAngle
    local tStartDistance, tCurrentDistance, tPrevDistance
-   
    
    put the keys of gTouchs into tTouchList
    
@@ -383,29 +383,29 @@ private function _InfoOfPinch pTouchId
    put  _ResizeDistance(tLocOneTouch, tLocTwoTouch) into tStartDistance
    put _TwoPointAngle(tLocOneTouch, tLocTwoTouch) into tStartAngle
    
-   // Distancia actual entre los dos toques
+   # Current distance between the two touches.
    put gTouchs[pTouchId]["CurrentLoc"] into tLocOneTouch
    put gTouchs[tTouchNumberTwo]["CurrentLoc"] into tLocTwoTouch
    put  _ResizeDistance(tLocOneTouch, tLocTwoTouch) into tCurrentDistance
    put _TwoPointAngle(tLocOneTouch, tLocTwoTouch) into tEndAngle
    
-   // Distancia de los puntos antes de este movimiento.
+   # Distance of the points before this movement.
    put gTouchs[pTouchId]["PrevLoc"] into tLocOneTouch
    put gTouchs[tTouchNumberTwo]["PrevLoc"] into tLocTwoTouch
    put  _ResizeDistance(tLocOneTouch, tLocTwoTouch) into tPrevDistance
    
-   // para saber si es un pellizco para arriba o abajo.
+   # To know if it's a pinch up or down.
    if tPrevDistance > tCurrentDistance then
       put 0 into sAddressOfMovePinch
    else if tPrevDistance < tCurrentDistance then
       put 1 into sAddressOfMovePinch
    end if
    
-   # Radio, Ángulo, Dirección del pellizco
+   # Radius, angle, pinch direction
    return round((tCurrentDistance/ tStartDistance)* 100), (tEndAngle - tStartAngle), sAddressOfMovePinch
 end _InfoOfPinch
 
-# Distancia entre dos puntos
+# Distance between two points
 private function  _ResizeDistance pLoc1, pLoc2
    local dx = 0, dy = 0, tDistance = 0
    put item 2 of pLoc1 - item 2 of pLoc2 into dy
@@ -414,12 +414,12 @@ private function  _ResizeDistance pLoc1, pLoc2
    return tDistance
 end  _ResizeDistance
 
-# Angulo formado entre la posición actual y la inicial
+# Angle formed between current and initial position
 private function _AngleTouch pTouchID
    return _TwoPointAngle( gTouchs[pTouchID]["StartLoc"],gTouchs[pTouchID]["CurrentLoc"])
 end _AngleTouch
 
-# Dirección del toque
+# Touch address
 private function _AddressTouch pLoc1, pLoc2
    local Xo, X, Yo, Y, MovX, MovY
    
@@ -472,7 +472,7 @@ command _DispatchTouchDoubleDown pTouchID
    # TouchStillDown
    put item  1 of tLoc into tTouchX
    put item 2 of tLoc into tTouchY
-   send "TouchStillDown pTouchID, tTouchX, tTouchY" to the long id of target
+   send "TouchStillDown pTouchID, tTouchX, tTouchY" to the long id of me
    send "_DispatchTouchDoubleDown pTouchID" to me in 0.1 sec
    put pTouchID into tTouchID
 end _DispatchTouchDoubleDown
