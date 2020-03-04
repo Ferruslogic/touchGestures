@@ -5,7 +5,7 @@
 
 If you don't know how to do it, check the LiveCode dictionary:
 
-• Start using the battery
+• Start using the library
 
 • Backscript
 
