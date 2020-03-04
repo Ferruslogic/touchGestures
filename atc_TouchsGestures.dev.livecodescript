@@ -70,6 +70,7 @@ pass touchStart
 end touchStart
 
 on touchEnd pTouchID
+	
 local tTime = 0, tTouchFast, tMillisec, tLoc
 
 put the millisec into tMillisec
@@ -470,7 +471,7 @@ if sPendingTouchStillDown is a number then cancel sPendingTouchStillDown
 if tMove > 33 or the mouse is not down or the num of lines of keys of gTouchs > 1 or (pTouchID is not tTouchID and tTouchID is a number) then exit _DispatchTouchDoubleDown
 
 # TouchStillDown
-put item  1 of tLoc into tTouchX
+put item 1 of tLoc into tTouchX
 put item 2 of tLoc into tTouchY
 send "TouchStillDown pTouchID, tTouchX, tTouchY" to the long id of me
 send "_DispatchTouchDoubleDown pTouchID" to me in 0.1 sec
