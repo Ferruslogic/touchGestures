@@ -1,4 +1,4 @@
-﻿script "com.ferruslogic.library.touchGestures"
+﻿script "community.livecode.torocruzand.ferruslogic.touchGestures"
 /*
 This library is in the public domain.
 There are no restrictions whatsoever.
@@ -38,421 +38,6 @@ local tNumTouchs
 local sPendingTouchStillDown, sStatTouchStillDown
 constant kTouchStillDownTimeSec = 1
 
-/**
-Title: Mobile Gestures
-
-Version: 1.0.0
-
-Author: FerrusLogic
-
-Description:
-This mini library is for some of the most common gestures we have on mobile devices.
-
-Tags:
-gestures
-
-*/
-
-/**
-Sent periodically while the touch is being held down.
-
-Example:
-on TouchStillDown pTouchId
-   if pTouchId is a number then
-      # Script
-   end if
-end TouchStillDown
-
-Description:
-You can handle the touchStillDown message to perform an action when the user holds the touch long time in screen.
-
-The touchStillDown message is sent to the control that was originally clicked, or to the card if no control was under the touch.
-
-Parameters:
-pTouchId: A number which uniquely identifies an individual physical touch action from
-a sequence of touch messages.
-
-Syntax: TouchStillDown pTouchId
-
-Type: message
-
-Platforms: mobile
-*/
-on TouchStillDown pTouchId
-   put the target
-end TouchStillDown
-
-/**
-Sent when the user double-touch.
-
-Example:
-on TouchDoubleDown pTouchId
-   if pTouchId is a number then
-      # Script
-   end if
-end TouchDoubleDown
-
-Description:
-Handle The TouchDoubleDown message to perform an action when the user double-touch in mobile. 
-
-The TouchDoubleDown message is sent to the control that was double-touchs, or to the card if no control was under the touch point.
-
-Note: This message is not sent if the user touches multiple screen points.
-
-Parameters:
-pTouchId: A number which uniquely identifies an individual physical touch action from
-a sequence of touch messages.
-
-Syntax: TouchDoubleDown pTouchId
-
-Type: message
-*/
-on TouchDoubleDown pTouchId
-
-end TouchDoubleDown
-
-
-/**
-Sent when the user double-touch.
-
-Example:
-on TouchDoubleUp pTouchId
-   if pTouchId is a number then
-      # Script
-   end if
-end TouchDoubleUp
-
-Description:
-Handle the TouchDoubleUp message to perform an action when the user double-touchs in mobile.
-
-The TouchDoubleUp message is sent to the control that was double-touchs, or to the card if no control was under the touch point.
-
-Note: This message is not sent if the user touches multiple screen points.
-
-Parameters:
-pTouchId: A number which uniquely identifies an individual physical touch action from
-a sequence of touch messages.
-
-Syntax: TouchDoubleUp pTouchId
-
-Type: message
-*/
-on TouchDoubleUp pTouchId
-   
-end TouchDoubleUp
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchStart pPinchId
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchStart
-
-Description:
-Handle the PinchStart message to perform an action when the user touches the screen, starting the pinch.
-
-The PinchStart message is sent to the control that was touched, or to the card if no control was under the pinch point.
-
-The pPinchId parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical touch action. All such sequences start with a PinchStart message, have one or more PinchMove messages and finish with either a PinchEnd message.
-
-No two pinch will have the same pPinchID, and it is possible to have multiple (interleaving) such sequences occurring at once. This allows handling of more than one physical pinch at once.
-
-Parameters:
-pTouchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-Syntax: PinchStart pTouchId
-
-Type: message
-*/
-on PinchStart pPinchId
-   /**  pPinchId. Pinch Id. **/
-end PinchStart
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchMove pPinchId, pRadioOfTouches, pType
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchMove
-
-Description:
-Handle the pinchMove message if you want to perform some action when the user changes the pinch position without ending the pinch or if you want to keep continuous track of the pinch position.
-
-The pinchMove message is sent to the control which received the pinchStart message.
-
-The pPinchID parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical pinch action. All such sequences start with a touchStart message, have one or more pinchMove messages and finish with either a pinchEnd.
-
-Parameters:
-pPinchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-pRadio: Radius between two of the touches. The one who moves and any other.
-
-pType: Type of pinch. Up (1), down (0) or simply by moving your fingers the same distance (null).
-
-Syntax: PinchMove pPinchId, pRadio, pType
-
-Type: message
-*/
-on PinchMove pPinchId, pRadio, pType
-   /**  pPinchId. Pinch Id. **/
-   /**  pRadioOfTouches. Radius between two of the touches. The one who moves and any other. **/
-   /**  pType. Type of pinch. Up (1), down (0) or simply by moving your fingers the same distance (null). **/
-end PinchMove
-
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchZoomingDown pPinchId, pRadioOfTouches, pType
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchZoomingDown
-
-Description:
-Handle the PinchZoomingDown message if you want to take any action when the user pinches to decrease on the screen.
-
-The PinchZoomingDown message is sent to the control which received the pinchStart message.
-
-The pPinchID parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical pinch action. All such sequences start with a touchStart message, have one or more pinchMove messages and finish with either a pinchEnd.
-
-Parameters:
-pPinchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-pRadio: Radius between two of the touches. The one who moves and any other.
-
-Syntax: PinchZoomingDown pPinchId, pRadio
-
-Type: message
-*/
-on PinchZoomingDown pPinchId, pRadio
-   
-end PinchZoomingDown
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchZoomingUp pPinchId, pRadioOfTouches, pType
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchZoomingUp
-
-Description:
-Handle the PinchZoomingUp message if you want to take any action when the user pinches to zoom on the screen.
-
-The PinchZoomingUp message is sent to the control which received the pinchStart message.
-
-The pPinchID parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical pinch action. All such sequences start with a touchStart message, have one or more pinchMove messages and finish with either a pinchEnd.
-
-Parameters:
-pPinchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-pRadio: Radius between two of the touches. The one who moves and any other.
-
-Syntax: PinchZoomingUp pPinchId, pRadio
-
-Type: message
-*/
-on PinchZoomingUp pPinchId, pRadio
-   
-end PinchZoomingUp
-
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchRotate pPinchId, pRadioOfTouches, pType
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchRotate
-
-Description:
-Handle the PinchRotate message if you want to take any action when the user pinches to rotate on the screen.
-
-The PinchRotate message is sent to the control which received the pinchStart message.
-
-The pPinchID parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical pinch action. All such sequences start with a touchStart message, have one or more pinchMove messages and finish with either a pinchEnd.
-
-Parameters:
-pPinchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-pRotation: It is what has rotated the touches on the screen..
-
-Syntax: PinchRotate pPinchId, pRotation
-
-Type: message
-*/
-on PinchRotate pPinchId, pRotation
-   
-end PinchRotate
-
-/**
-Sent when a user pinches a control in a mobile application
-
-Example:
-on PinchEnd pPinchId
-   if pPinchId is a number then
-      # Script
-   end if
-end PinchEnd
-
-Description:
-Handle the pinchEnd message to perform an action when the user finishes a pinch sequence.
-
-The pinchEnd message is sent to the control that received the pinchStart message that started the touch sequence.
-
-The pPinchId parameter is a number which uniquely identifies a sequence of pinch messages corresponding to an individual, physical touch action. All such sequences start with a PinchStart message, have one or more PinchMove messages and finish with either a PinchEnd message.
-
-Parameters:
-pTouchId: A number which uniquely identifies an individual physical pinch action from
-a sequence of pinch messages.
-
-
-Syntax: PinchEnd pPinchId
-
-Type: message
-*/
-on PinchEnd pPinchId
-   
-end PinchEnd
-
-/** 
-It is sent when the point at which the user touches the screen changes in a certain time interval.
-
-Example:
-on TouchVeryFast pTouchID, pDistance, pMoveAddress
-   put "very fast touch. touch address is " &  pMoveAddress & " with a distance of " & pDistance & "px" into field 1
-end TouchVeryFast
-
-Description:
-Handle the TouchVeryFast  message to perform an action when the user touch very fastan object.
-
-The TouchVeryFast  message is sent to the control that received the touchStart message that initiated the touch sequence.
-
-The pPinchId parameter is a number that uniquely identifies a sequence of touch messages corresponding to an individual physical touch action. All these sequences begin with a touchStart message, have one or more touchMove messages and end with a touchEnd message.
-
-Parameters:
-pTouchID: a number that uniquely identifies an individual physical touch action of a sequence of touch messages.
-
-pDistance: the distance traveled by touch.
-
-pMoveAddress: Direction in which the touch moves for the last time
-
-Syntax: TouchVeryFast  pTouchID, pDistance, pMoveAddress
-
-Type: message
-*/
-on TouchVeryFast pTouchID, pDistance, pMoveAddress
-   
-end TouchVeryFast
-
-/** 
-It is sent when the point at which the user touches the screen changes in a certain time interval.
-
-Example:
-on TouchFast pTouchID, pDistance, pMoveAddress
-   put "fast touch. touch address is " &  pMoveAddress & " with a distance of " & pDistance & "px" into field 1
-end TouchFast
-
-Description:
-Handle the TouchFast  message to perform an action when the user touch fastan object.
-
-The TouchFast  message is sent to the control that received the touchStart message that initiated the touch sequence.
-
-The pPinchId parameter is a number that uniquely identifies a sequence of touch messages corresponding to an individual physical touch action. All these sequences begin with a touchStart message, have one or more touchMove messages and end with a touchEnd message.
-
-Parameters:
-pTouchID: a number that uniquely identifies an individual physical touch action of a sequence of touch messages.
-
-pDistance: the distance traveled by touch.
-
-pMoveAddress: Direction in which the touch moves for the last time
-
-Syntax: TouchFast  pTouchID, pDistance, pMoveAddress
-
-Type: message
-*/
-on TouchFast pTouchID, pDistance, pMoveAddress
-   
-end TouchFast
-
-/** 
-It is sent when the point at which the user touches the screen changes in a certain time interval.
-
-Example:
-on TouchFast pTouchID, pDistance, pMoveAddress
-   put "fast touch. touch address is " &  pMoveAddress & " with a distance of " & pDistance & "px" into field 1
-end TouchFast
-
-Description:
-Handle the TouchFast  message to perform an action when the user touch slow object.
-
-The TouchFast  message is sent to the control that received the touchStart message that initiated the touch sequence.
-
-The pPinchId parameter is a number that uniquely identifies a sequence of touch messages corresponding to an individual physical touch action. All these sequences begin with a touchStart message, have one or more touchMove messages and end with a touchEnd message.
-
-Parameters:
-pTouchID: a number that uniquely identifies an individual physical touch action of a sequence of touch messages.
-
-pDistance: the distance traveled by touch.
-
-pMoveAddress: Direction in which the touch moves for the last time
-
-Syntax: TouchFast  pTouchID, pDistance, pMoveAddress
-
-Type: message
-*/
-on TouchSlow pTouchID, pDistance, pMoveAddress
-   
-end TouchSlow
-
-
-/** 
-It is sent when the point at which the user touches the screen changes in a certain time interval.
-
-Example:
-on TouchVerySlow pTouchID, pDistance, pMoveAddress
-   put "fast touch. touch address is " &  pMoveAddress & " with a distance of " & pDistance & "px" into field 1
-end TouchVerySlow
-
-Description:
-Handle the TouchVerySlow  message to perform an action when the user touch very slow object.
-
-The TouchVerySlow  message is sent to the control that received the touchStart message that initiated the touch sequence.
-
-The pPinchId parameter is a number that uniquely identifies a sequence of touch messages corresponding to an individual physical touch action. All these sequences begin with a touchStart message, have one or more touchMove messages and end with a touchEnd message.
-
-Parameters:
-pTouchID: a number that uniquely identifies an individual physical touch action of a sequence of touch messages.
-
-pDistance: the distance traveled by touch.
-
-pMoveAddress: Direction in which the touch moves for the last time
-
-Syntax: TouchVerySlow  pTouchID, pDistance, pMoveAddress
-
-Type: message
-*/
-on TouchVerySlow pTouchID, pDistance, pMoveAddress
-   
-end TouchVerySlow
-
 /////////////////////////////////////////////////////////////
 //////****************** The magic ********************//////
 /////////////////////////////////////////////////////////////
@@ -475,7 +60,7 @@ on touchStart pTouchID
          put item  1 of tLoc into tLocX
          put  item 2 of tLoc into tLocY
          if there is sLongId[pTouchID] and "TouchDoubleDown" is not among the lines of the pendingMessages then
-            dispatch "TouchDoubleDown" to sLongId[pTouchID] with  pTouchID, tLocX, tLocY
+            dispatch "TouchDoubleDown" to sLongId[pTouchID] with  pTouchID
          end if
          pass touchStart
       else
@@ -537,7 +122,7 @@ on touchMove pTouchID, pTouchX, pTouchY
          
          if sChangerPinch is not tChangerPinch then
             if there is sLongId[sPinchId] then
-               dispatch "PinchMove" to sLongId[sPinchId] with sPinchId, tChangerPinch
+               dispatch "PinchMove" to sLongId[sPinchId] with sPinchId
             end if
             /** PINCHS ZOOMING **/
             local tPrevAngle, tDoNotTurnFingers = true
@@ -549,12 +134,12 @@ on touchMove pTouchID, pTouchX, pTouchY
             /** Messages generated when the screen is "pinched" **/
             if item 3 of tInfoOfPinch is 0 and tDoNotTurnFingers then
                if there is sLongId[sPinchId] then
-                  dispatch "PinchZoomingDown" to sLongId[sPinchId] with sPinchId, tChangerPinch
+                  dispatch "PinchZoomingDown" to sLongId[sPinchId] with sPinchId
                end if
             end if
             if item 3 of tInfoOfPinch is 1 and tDoNotTurnFingers then
                if there is sLongId[sPinchId] then
-                  dispatch "PinchZoomingUp" to sLongId[sPinchId] with sPinchId, tChangerPinch
+                  dispatch "PinchZoomingUp" to sLongId[sPinchId] with sPinchId
                end if
             end if
             
@@ -568,13 +153,13 @@ on touchMove pTouchID, pTouchX, pTouchY
          put item 2 of tInfoOfPinch into tAngleOfPinch
          if abs(tAngleOfPinch) > 5 and sAngleOfPinch <> tAngleOfPinch then
             if there is sLongId[sPinchId] then
-               dispatch "PinchRotate" to sLongId[sPinchId] with sPinchId, tAngleOfPinch
+               --dispatch "PinchRotate" to sLongId[sPinchId] with sPinchId, tAngleOfPinch
             end if
          end if
          put tAngleOfPinch into sAngleOfPinch
       else
          
-         local tAngle = 0
+         local tAngle = 0, tChanged
          put gTouchs[pTouchID]["Angle"] into tAngle
          
          if gTouchs[pTouchID]["Changed"] > 50 and gTouchs[pTouchID]["OldChanged"] <> gTouchs[pTouchID]["Changed"] then           
@@ -586,9 +171,9 @@ on touchMove pTouchID, pTouchX, pTouchY
                put  gTouchs[pTouchID]["ChangedInX"] into tChanged
                if abs(tChanged) > 10 then
                   if tChanged > 1 then
-                     send "PushLeft pTouchID, tChanged" to the long id of me  in 0
+                     dispatch "PushLeft" to sLongId[sPinchId] with pTouchID, tChanged
                   else
-                     send "PushRight pTouchID, tChanged" to the long id of me in 0
+                     dispatch "PushRight" to sLongId[sPinchId] with pTouchID, tChanged
                   end if
                end if
                
@@ -597,10 +182,9 @@ on touchMove pTouchID, pTouchX, pTouchY
                put gTouchs[pTouchID]["ChangedInY"] into tChanged
                if abs(tChanged) > 10 then
                   if tChanged > 1 then
-                     send "PushUp pTouchID, tChanged" to the long id of me in 0
-                     
+                     dispatch "PushUp" to sLongId[sPinchId] with pTouchID, tChanged
                   else
-                     send "PushDown pTouchID, tChanged" to the long id of me  in 0
+                     dispatch "PushDown" to sLongId[sPinchId] with pTouchID, tChanged
                   end if
                end if
             end if
@@ -730,6 +314,7 @@ private function _InfoOfPinch pTouchId
    put  _ResizeDistance(tLocOneTouch, tLocTwoTouch) into tStartDistance
    //put _TwoPointAngle(tLocOneTouch, tLocTwoTouch) into tStartAngle
    put _AngleTouch(pTouchId) into tStartAngle
+   
    /** Current distance between the two touches. **/
    put gTouchs[pTouchId]["CurrentLoc"] into tLocOneTouch
    put gTouchs[tTouchNumberTwo]["CurrentLoc"] into tLocTwoTouch
@@ -747,6 +332,7 @@ private function _InfoOfPinch pTouchId
    else if tPrevDistance < tCurrentDistance then
       put 1 into sAddressOfMovePinch
    end if
+   
    /** Radius, angle, pinch direction **/
    return round((tCurrentDistance/ tStartDistance)* 100), (tEndAngle - tStartAngle), sAddressOfMovePinch
 end _InfoOfPinch
@@ -762,7 +348,8 @@ end  _ResizeDistance
 
 /** Angle formed between current and the center of the screen **/
 private function _AngleTouch pTouchID
-   local tScreenCenter, tX, tY, tAngle, pX, pY
+   local tScreenCenter, tX, tY, tAngle, pX, pY, oppositeLeg, adjacentLeg, alpha
+   local foundAngle
    
    put item 1 of the loc of me into pX
    put item 2 of the loc of me  into pY
@@ -787,6 +374,7 @@ private function _AngleTouch pTouchID
    else 
       put 90 into alpha
    end if
+   
    -- at this point, the angle will be between -180 and 180 degrees
    
    switch
