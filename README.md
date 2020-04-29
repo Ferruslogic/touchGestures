@@ -1,4 +1,4 @@
-# touchGestures 1.0.0
+# touchGestures 1.1.0
 It is a library to handle some gestures that the user can do with the touches.
 
 # How to use this library
