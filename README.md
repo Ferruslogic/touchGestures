@@ -16,6 +16,6 @@ PinchStart, PinchMove, PinchZoomingDown, PinchZoomingUp, PinchRotate and PinchEn
 
 TouchVeryFast, TouchFast, TouchSlow and TouchVerySlow: These messages are generated according to the clarity of touch.
 
-![Ferrus Logic Logo](https://ferruslogic.com/wp-content/uploads/2020/01/Ferrus-Logic-copia-1024x246.png)
+![Ferrus Logic Logo](https://ferruslogic.com/wp-content/uploads/2020/04/FerrusLogic4-1.svg)
 
 Copyright © 2019-2020 [Ferrus Logic.](http://ferruslogic.com/). World Wide Web
