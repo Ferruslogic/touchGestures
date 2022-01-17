@@ -1,4 +1,4 @@
-﻿script "community.livecode.torocruzand.ferruslogic.touchGestures"
+﻿script "community.ferruslogic.touchGestures.2.0.0"
 /*
 This library is in the public domain.
 There are no restrictions whatsoever.
@@ -74,216 +74,222 @@ on touchStart pTouchID
    pass touchStart
 end touchStart
 
+
 on touchMove pTouchID, pTouchX, pTouchY
-   if the mouse is not down then pass touchMove
-   /** Saving touch position **/
-   if gTouchs[pTouchID]["StartLoc"] is empty then
-      put pTouchX, pTouchY into gTouchs[pTouchID]["StartLoc"]
-   else
-      put pTouchX, pTouchY into gTouchs[pTouchID]["CurrentLoc"]
-      /** Changer in X **/
-      put item 1 of gTouchs[pTouchID]["StartLoc"] - pTouchX into gTouchs[pTouchID]["ChangedInX"]
-      /** Changer in Y **/
-      put item 2 of gTouchs[pTouchID]["StartLoc"]  - pTouchY into gTouchs[pTouchID]["ChangedInY"]
-      /** Distance **/
-      put round(sqrt((gTouchs[pTouchID]["ChangedInX"]^2) + (gTouchs[pTouchID]["ChangedInY"]^2))) into gTouchs[pTouchID]["Changed"]
-      /** Angles and Rotation **/
-      put _AngleTouch(pTouchID) into gTouchs[pTouchID]["Angle"]
-      /** For the address **/
-      local tOldAddress = ""
-      if gTouchs[pTouchID]["AddressOfTouch"] is not empty then put gTouchs[pTouchID]["AddressOfTouch"] into tOldAddress
-      if gTouchs[pTouchID]["PrevLoc"] is a point then
-         put _AddressTouch(gTouchs[pTouchID]["PrevLoc"],gTouchs[pTouchID]["CurrentLoc"]) into gTouchs[pTouchID]["AddressOfTouch"]
-      else
-         put _AddressTouch(gTouchs[pTouchID]["StartLoc"],gTouchs[pTouchID]["CurrentLoc"]) into gTouchs[pTouchID]["AddressOfTouch"]
-      end if
-      if gTouchs[pTouchID]["AddressOfTouch"] is empty then put tOldAddress into gTouchs[pTouchID]["AddressOfTouch"]
-   end if
-   
-   put the keys of gTouchs into sDoubleTouchIDs
-   
-   /** If I have not moved the touch I do nothing **/
-   if gTouchs[pTouchID]["CurrentLoc"] is a point then
-      
-      /** To know if it is a multitouch **/
-      if the num of lines of keys of gTouchs >= 2 then
-         
-         /** PINCHSTART  **/
-         if sIsPinch is 0 then
-            put 1 into sIsPinch
-            add 1 to sPinchId
-            put the long id of target into sLongId[sPinchId]
-            dispatch "PinchStart" to sLongId[sPinchId] with sPinchId
-         end if
-         
-         local tInfoOfPinch, tChangerPinch
-         put _InfoOfPinch(pTouchID) into tInfoOfPinch
-         put item 1 of tInfoOfPinch into tChangerPinch
-         
-         if sChangerPinch is not tChangerPinch then
-            if there is sLongId[sPinchId] then
-               dispatch "PinchMove" to sLongId[sPinchId] with sPinchId
-            end if
-            /** PINCHS ZOOMING **/
-            local tPrevAngle, tDoNotTurnFingers = true
-            if tPrevAngle is not a number then
-               put the item 2 of tInfoOfPinch into tPrevAngle
-            else
-               put the item 2 of tInfoOfPinch is tPrevAngle into tDoNotTurnFingers
-            end if
-            /** Messages generated when the screen is "pinched" **/
-            if item 3 of tInfoOfPinch is 0 and tDoNotTurnFingers then
-               if there is sLongId[sPinchId] then
-                  dispatch "PinchZoomingDown" to sLongId[sPinchId] with sPinchId
-               end if
-            end if
-            if item 3 of tInfoOfPinch is 1 and tDoNotTurnFingers then
-               if there is sLongId[sPinchId] then
-                  dispatch "PinchZoomingUp" to sLongId[sPinchId] with sPinchId
-               end if
+    put "touchMove " & the keys of gTouchs into fld 2
+    
+    /** Saving touch position **/
+    if gTouchs[pTouchID]["StartLoc"] is empty then
+        put pTouchX, pTouchY into gTouchs[pTouchID]["StartLoc"]
+        
+    else
+        put pTouchX, pTouchY into gTouchs[pTouchID]["CurrentLoc"]
+        /** Changer in X **/
+        put item 1 of gTouchs[pTouchID]["StartLoc"] - pTouchX into gTouchs[pTouchID]["ChangedInX"]
+        /** Changer in Y **/
+        put item 2 of gTouchs[pTouchID]["StartLoc"]  - pTouchY into gTouchs[pTouchID]["ChangedInY"]
+        /** Distance **/
+        put round(sqrt((gTouchs[pTouchID]["ChangedInX"]^2) + (gTouchs[pTouchID]["ChangedInY"]^2))) into gTouchs[pTouchID]["Changed"]
+        /** Angles and Rotation **/
+        put _AngleTouch(pTouchID) into gTouchs[pTouchID]["Angle"]
+        /** For the address **/
+        local tOldAddress = ""
+        if gTouchs[pTouchID]["AddressOfTouch"] is not empty then put gTouchs[pTouchID]["AddressOfTouch"] into tOldAddress
+        if gTouchs[pTouchID]["PrevLoc"] is a point then
+            put _AddressTouch(gTouchs[pTouchID]["PrevLoc"],gTouchs[pTouchID]["CurrentLoc"]) into gTouchs[pTouchID]["AddressOfTouch"]
+        else
+            put _AddressTouch(gTouchs[pTouchID]["StartLoc"],gTouchs[pTouchID]["CurrentLoc"]) into gTouchs[pTouchID]["AddressOfTouch"]
+        end if
+        if gTouchs[pTouchID]["AddressOfTouch"] is empty then put tOldAddress into gTouchs[pTouchID]["AddressOfTouch"]
+    end if
+    
+    put the keys of gTouchs into sDoubleTouchIDs
+    
+    /** If I have not moved the touch I do nothing **/
+    if gTouchs[pTouchID]["CurrentLoc"] is a point then
+        
+        /** To know if it is a multitouch **/
+        if the num of lines of keys of gTouchs >= 2 then
+            
+            /** PINCHSTART  **/
+            if sIsPinch is 0 then
+                put 1 into sIsPinch
+                add 1 to sPinchId
+                put the long id of target into sLongId[sPinchId]
+                dispatch "PinchStart" to sLongId[sPinchId] with sPinchId
             end if
             
-            put the item 2 of tInfoOfPinch into tPrevAngle
-         end if
-         
-         put item 1 of tInfoOfPinch  into sChangerPinch
-         
-         /** ROTATE **/
-         local tAngleOfPinch = 0
-         put item 2 of tInfoOfPinch into tAngleOfPinch
-         if abs(tAngleOfPinch) > 5 and sAngleOfPinch <> tAngleOfPinch then
-            if there is sLongId[sPinchId] then
-               --dispatch "PinchRotate" to sLongId[sPinchId] with sPinchId, tAngleOfPinch
-            end if
-         end if
-         put tAngleOfPinch into sAngleOfPinch
-      else
-         
-         local tAngle = 0, tChanged
-         put gTouchs[pTouchID]["Angle"] into tAngle
-         
-         if gTouchs[pTouchID]["Changed"] > 50 and gTouchs[pTouchID]["OldChanged"] <> gTouchs[pTouchID]["Changed"] then           
-            put tAngle into fld 2
+            local tInfoOfPinch, tChangerPinch
+            put _InfoOfPinch(pTouchID) into tInfoOfPinch
+            put item 1 of tInfoOfPinch into tChangerPinch
             
-            
-            /** PUSH LEFT AND RIGHT **/
-            if ((tAngle >= 0 and tAngle <= 40) or (tAngle >= 320 and tAngle <= 360) or (tAngle >= 140 and tAngle <= 220)) then
-               put  gTouchs[pTouchID]["ChangedInX"] into tChanged
-               if abs(tChanged) > 10 then
-                  if tChanged > 1 then
-                     dispatch "PushLeft" to sLongId[sPinchId] with pTouchID, tChanged
-                  else
-                     dispatch "PushRight" to sLongId[sPinchId] with pTouchID, tChanged
-                  end if
-               end if
-               
-               /** PUSH UP AND DOWN **/
-            else if (tAngle >= 50 and tAngle <= 130) or (tAngle >= 140 and tAngle <= 310) then
-               put gTouchs[pTouchID]["ChangedInY"] into tChanged
-               if abs(tChanged) > 10 then
-                  if tChanged > 1 then
-                     dispatch "PushUp" to sLongId[sPinchId] with pTouchID, tChanged
-                  else
-                     dispatch "PushDown" to sLongId[sPinchId] with pTouchID, tChanged
-                  end if
-               end if
+            if sChangerPinch is not tChangerPinch then
+                if there is sLongId[sPinchId] then
+                    dispatch "PinchMove" to sLongId[sPinchId] with sPinchId
+                end if
+                /** PINCHS ZOOMING **/
+                local tPrevAngle, tDoNotTurnFingers = true
+                if tPrevAngle is not a number then
+                    put the item 2 of tInfoOfPinch into tPrevAngle
+                else
+                    put the item 2 of tInfoOfPinch is tPrevAngle into tDoNotTurnFingers
+                end if
+                /** Messages generated when the screen is "pinched" **/
+                if item 3 of tInfoOfPinch is 0 and tDoNotTurnFingers then
+                    if there is sLongId[sPinchId] then
+                        dispatch "PinchZoomingDown" to sLongId[sPinchId] with sPinchId
+                    end if
+                end if
+                if item 3 of tInfoOfPinch is 1 and tDoNotTurnFingers then
+                    if there is sLongId[sPinchId] then
+                        dispatch "PinchZoomingUp" to sLongId[sPinchId] with sPinchId
+                    end if
+                end if
+                
+                put the item 2 of tInfoOfPinch into tPrevAngle
             end if
-            /** Save changes to not send messages for pleasure **/
-            put gTouchs[pTouchID]["Changed"] into gTouchs[pTouchID]["OldChanged"]
-         end if
-      end if
-   end if
-   
-   /** To know where I come from **/
-   put pTouchX, pTouchY into gTouchs[pTouchID]["PrevLoc"]
-   pass touchMove
+            
+            put item 1 of tInfoOfPinch  into sChangerPinch
+            
+            /** ROTATE **/
+            local tAngleOfPinch = 0
+            put item 2 of tInfoOfPinch into tAngleOfPinch
+            if abs(tAngleOfPinch) > 5 and sAngleOfPinch <> tAngleOfPinch then
+                if there is sLongId[sPinchId] then
+                    --dispatch "PinchRotate" to sLongId[sPinchId] with sPinchId, tAngleOfPinch
+                end if
+            end if
+            put tAngleOfPinch into sAngleOfPinch
+        else
+            
+            local tAngle = 0, tChanged
+            put gTouchs[pTouchID]["Angle"] into tAngle
+            
+            if gTouchs[pTouchID]["Changed"] > 50 and gTouchs[pTouchID]["OldChanged"] <> gTouchs[pTouchID]["Changed"] then           
+                put tAngle into fld 2
+                
+                
+                /** PUSH LEFT AND RIGHT **/
+                if ((tAngle >= 0 and tAngle <= 40) or (tAngle >= 320 and tAngle <= 360) or (tAngle >= 140 and tAngle <= 220)) then
+                    put  gTouchs[pTouchID]["ChangedInX"] into tChanged
+                    if abs(tChanged) > 10 then
+                        if tChanged > 1 then
+                            dispatch "PushLeft" to sLongId[sPinchId] with pTouchID, tChanged
+                        else
+                            dispatch "PushRight" to sLongId[sPinchId] with pTouchID, tChanged
+                        end if
+                    end if
+                    
+                    /** PUSH UP AND DOWN **/
+                else if (tAngle >= 50 and tAngle <= 130) or (tAngle >= 140 and tAngle <= 310) then
+                    put gTouchs[pTouchID]["ChangedInY"] into tChanged
+                    if abs(tChanged) > 10 then
+                        if tChanged > 1 then
+                            dispatch "PushUp" to sLongId[sPinchId] with pTouchID, tChanged
+                        else
+                            dispatch "PushDown" to sLongId[sPinchId] with pTouchID, tChanged
+                        end if
+                    end if
+                end if
+                /** Save changes to not send messages for pleasure **/
+                put gTouchs[pTouchID]["Changed"] into gTouchs[pTouchID]["OldChanged"]
+            end if
+        end if
+    end if
+    
+    /** To know where I come from **/
+    put pTouchX, pTouchY into gTouchs[pTouchID]["PrevLoc"]
+    pass touchMove
 end touchMove
 
 
 on touchEnd pTouchID
-   local tTime = 0, tTouchFast, tMillisec, tLoc, tChanger, tAddressOfTouch, tTouchX, tTouchY
-   
-   put the millisec into tMillisec
-   put the num of lines of keys of gTouchs into tNumTouchs
-   put tMillisec - gTouchs[pTouchID]["StartTime"] into gTouchs[pTouchId]["CurrentTime"]
-   put round(gTouchs[pTouchId]["CurrentTime"]) into tTime
-   
-   if gTouchs[pTouchID]["AddressOfTouch"] is empty then
-      put "none" into gTouchs[pTouchID]["AddressOfTouch"]
-   end if
-   
-   if gTouchs[pTouchID]["Changed"] is empty then
-      put 0 into  gTouchs[pTouchID]["Changed"]
-   end if
-   
-   put gTouchs[pTouchID]["Changed"] into tChanger
-   put gTouchs[pTouchID]["AddressOfTouch"] into tAddressOfTouch
-   
-   switch
-      case tTime <= 50
-         if there is sLongId[pTouchID] then
-            dispatch "TouchVeryFast" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
-         end if
-         put the result into tTouchFast
-         break
-      case tTime <= 250
-         if there is sLongId[pTouchID] then
-            dispatch "TouchFast" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
-         end if
-         put the result into tTouchFast
-         break
-      default
-         if tTime > 250 and tTime < 700 then
+    delete variable gTouchs[ pTouchID ]
+    answer "touchEnd " & the keys of gTouchs
+    
+    local tTime = 0, tTouchFast, tMillisec, tLoc, tChanger, tAddressOfTouch, tTouchX, tTouchY
+    
+    put the millisec into tMillisec
+    put the num of lines of keys of gTouchs into tNumTouchs
+    put tMillisec - gTouchs[pTouchID]["StartTime"] into gTouchs[pTouchId]["CurrentTime"]
+    put round(gTouchs[pTouchId]["CurrentTime"]) into tTime
+    
+    if gTouchs[pTouchID]["AddressOfTouch"] is empty then
+        put "none" into gTouchs[pTouchID]["AddressOfTouch"]
+    end if
+    
+    if gTouchs[pTouchID]["Changed"] is empty then
+        put 0 into  gTouchs[pTouchID]["Changed"]
+    end if
+    
+    put gTouchs[pTouchID]["Changed"] into tChanger
+    put gTouchs[pTouchID]["AddressOfTouch"] into tAddressOfTouch
+    
+    switch
+        case tTime <= 50
             if there is sLongId[pTouchID] then
-               dispatch "TouchSlow" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
+                dispatch "TouchVeryFast" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
             end if
             put the result into tTouchFast
-         else
+            break
+        case tTime <= 250
             if there is sLongId[pTouchID] then
-               dispatch "TouchVerySlow" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
+                dispatch "TouchFast" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
             end if
             put the result into tTouchFast
-         end if
-   end switch
-   
-   local tLongId
-   put sLongId[pTouchID] into tLongId
-   /** remove the touch just ended in the array **/
-   delete global gTouchs[pTouchId]
-   delete local sLongId[pTouchID]
-   
-   
-   /** remove the touch just ended from the double touch list **/
-   filter sDoubleTouchIDs without pTouchID
-   
-   if tNumTouchs <= 2 then
-      /** PINCHEND **/
-      if sIsPinch is 1 then
-         put 0 into sIsPinch
-         if there is sLongId[sPinchId] then
-            dispatch "PinchEnd" to sLongId[sPinchId] with sPinchId
-         end if
-      else
-         /** TOUCHDOUBLEUP **/
-         add 1 to sTouchDoubleUp
-         if sTouchDoubleUp is 1 then
-            put tMillisec into sLastTouchUp["StartTime"]
-         else if (tMillisec - sLastTouchUp["StartTime"]) <= kDoubleClickInterval then
-            put 0 into sTouchDoubleUp
-            put the mouseLoc into tLoc
-            put item  1 of tLoc into tTouchX
-            put item 2 of tLoc into tTouchY
-            if there is tLongId then
-               dispatch "TouchDoubleUp" to tLongId with pTouchID, tTouchX, tTouchY
+            break
+        default
+            if tTime > 250 and tTime < 700 then
+                if there is sLongId[pTouchID] then
+                    dispatch "TouchSlow" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
+                end if
+                put the result into tTouchFast
+            else
+                if there is sLongId[pTouchID] then
+                    dispatch "TouchVerySlow" to sLongId[pTouchID] with pTouchID, tChanger, tAddressOfTouch
+                end if
+                put the result into tTouchFast
             end if
-         else
-            put tMillisec into sLastTouchUp["StartTime"]
-         end if
-      end if
-   end if
-   
-   if tNumTouchs is 0 then delete global gTouchs
-   pass touchEnd
+    end switch
+    
+    local tLongId
+    put sLongId[pTouchID] into tLongId
+    /** remove the touch just ended in the array **/
+    delete global gTouchs[pTouchId]
+    delete local sLongId[pTouchID]
+    
+    
+    /** remove the touch just ended from the double touch list **/
+    filter sDoubleTouchIDs without pTouchID
+    
+    if tNumTouchs <= 2 then
+        /** PINCHEND **/
+        if sIsPinch is 1 then
+            put 0 into sIsPinch
+            if there is sLongId[sPinchId] then
+                dispatch "PinchEnd" to sLongId[sPinchId] with sPinchId
+            end if
+        else
+            /** TOUCHDOUBLEUP **/
+            add 1 to sTouchDoubleUp
+            if sTouchDoubleUp is 1 then
+                put tMillisec into sLastTouchUp["StartTime"]
+            else if (tMillisec - sLastTouchUp["StartTime"]) <= kDoubleClickInterval then
+                put 0 into sTouchDoubleUp
+                put the mouseLoc into tLoc
+                put item  1 of tLoc into tTouchX
+                put item 2 of tLoc into tTouchY
+                if there is tLongId then
+                    dispatch "TouchDoubleUp" to tLongId with pTouchID, tTouchX, tTouchY
+                end if
+            else
+                put tMillisec into sLastTouchUp["StartTime"]
+            end if
+        end if
+    end if
+    
+    if tNumTouchs is 0 then delete global gTouchs
+    pass touchEnd
 end touchEnd
 
 on touchRelease pID
